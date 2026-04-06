@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DigitalAR – Tecnología & Servicios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4fa;
+      --white: #ffffff;
+      --blue-light: #4ea8e8;
+      --blue: #1a6fc4;
+      --blue-dark: #0d3f7a;
+      --text: #0d1b2e;
+      --muted: #5a7395;
+      --border: #d6e4f5;
+      --card-bg: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 5%;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 24px rgba(26,111,196,0.07);
+    }
+
+    .logo-img { height: 52px; object-fit: contain; }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      box-shadow: 0 4px 18px rgba(26,111,196,0.28);
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,111,196,0.38) !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 7rem 5% 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #e8f0fb 0%, #f0f7ff 40%, #ddeeff 100%);
+      z-index: 0;
+    }
+
+    .hero-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      z-index: 0;
+    }
+
+    .hero-circle.c1 {
+      width: 500px; height: 500px;
+      background: rgba(78,168,232,0.22);
+      top: -100px; right: -100px;
+    }
+
+    .hero-circle.c2 {
+      width: 320px; height: 320px;
+      background: rgba(26,111,196,0.15);
+      bottom: 0; left: 10%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(78,168,232,0.15);
+      border: 1px solid rgba(78,168,232,0.35);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--blue-light);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.4s forwards;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.6s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.8s forwards;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff;
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      box-shadow: 0 6px 24px rgba(26,111,196,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(26,111,196,0.4); }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--blue);
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary:hover { border-color: var(--blue-light); transform: translateY(-2px); }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 1s forwards;
+    }
+
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1;
+    }
+
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* SECCIONES */
+    section { padding: 6rem 5%; }
+
+    .section-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue-light);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 500px;
+      margin-bottom: 3.5rem;
+    }
+
+    /* PRODUCTOS */
+    .productos { background: var(--white); }
+
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .producto-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2rem 1.2rem 1.5rem;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .producto-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s, border-color 0.3s;
+    }
+
+    .producto-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(26,111,196,0.12);
+      border-color: var(--blue-light);
+    }
+
+    .producto-icon { font-size: 2.6rem; margin-bottom: 1rem; display: block; }
+
+    .producto-card h3 { font-size: 0.95rem; font-weight: 600; }
+
+    /* SERVICIOS */
+    .servicios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .servicio-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .servicio-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s;
+    }
+
+    .servicio-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,111,196,0.13); }
+
+    .servicio-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue-light), var(--blue-dark));
+    }
+
+    .servicio-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, rgba(78,168,232,0.15), rgba(26,111,196,0.1));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .servicio-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .servicio-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; }
+
+    /* POR QUÉ */
+    .porque {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, #0a2a5a 100%);
+      color: #fff;
+    }
+
+    .porque .section-title { color: #fff; }
+    .porque .section-tag { color: var(--blue-light); }
+    .porque .section-sub { color: rgba(255,255,255,0.65); }
+
+    .porque-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.6rem;
+    }
+
+    .porque-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.8rem;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .porque-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .porque-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .porque-item h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; color: #fff; }
+    .porque-item p { font-size: 0.84rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+    /* CONTACTO */
+    .contacto { background: var(--white); }
+
+    .contacto-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .contacto-cards { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+
+    .contacto-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1.4rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+
+    .contacto-card:hover {
+      border-color: var(--blue-light);
+      transform: translateX(4px);
+      box-shadow: 0 6px 24px rgba(26,111,196,0.1);
+    }
+
+    .contacto-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .contacto-card-icon.wa { background: #e7f9ef; }
+    .contacto-card-icon.ig { background: #fce4ec; }
+
+    .contacto-card-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .contacto-card-val { font-size: 0.95rem; font-weight: 600; }
+
+    .contacto-form-side {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem;
+    }
+
+    .contacto-form-side h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group { margin-bottom: 1.1rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--blue-light);
+      box-shadow: 0 0 0 3px rgba(78,168,232,0.12);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    .form-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 20px rgba(26,111,196,0.28);
+    }
+
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(26,111,196,0.38); }
+
+    /* FOOTER */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.6);
+      padding: 2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer .logo-img { height: 38px; filter: brightness(0) invert(1); opacity: 0.85; }
+    footer span { font-size: 0.8rem; }
+
+    .footer-links { display: flex; gap: 1.8rem; list-style: none; }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .footer-links a:hover { color: var(--blue-light); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .contacto-wrapper { grid-template-columns: 1fr; gap: 2rem; }
+      .stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <img src="img/logo-DIGITALL.jpeg" alt="DigitalAR" class="logo-img"/>
+  <ul class="nav-links">
+    <li><a href="#productos">Productos</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#porque">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="https://wa.me/543534081686" target="_blank" class="nav-cta">WhatsApp</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-circle c1"></div>
+  <div class="hero-circle c2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Tecnología al alcance de todos</div>
+    <h1>Tu mundo,<br/><span>más conectado</span></h1>
+    <p>Productos tecnológicos de calidad, instalación de cámaras de seguridad y desarrollo de páginas web a medida.</p>
+    <div class="hero-actions">
+      <a href="#productos" class="btn-primary">Ver productos ↓</a>
+      <a href="https://wa.me/543534081686" target="_blank" class="btn-secondary">💬 Consultar ahora</a>
+    </div>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-num">+100</div>
+        <div class="stat-label">Clientes satisfechos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Servicios especializados</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Soporte disponible</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section class="productos" id="productos">
+  <div class="section-tag">Lo que vendemos</div>
+  <div class="section-title">Nuestros productos</div>
+  <p class="section-sub">Todo lo que necesitás en tecnología, en un solo lugar.</p>
+  <div class="productos-grid">
+    <div class="producto-card"><span class="producto-icon">🎧</span><h3>Auriculares</h3></div>
+    <div class="producto-card"><span class="producto-icon">⌚</span><h3>Smartwatch</h3></div>
+    <div class="producto-card"><span class="producto-icon">🔊</span><h3>Parlantes</h3></div>
+    <div class="producto-card"><span class="producto-icon">📱</span><h3>Fundas</h3></div>
+    <div class="producto-card"><span class="producto-icon">💨</span><h3>Vapers</h3></div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-tag">Lo que hacemos</div>
+  <div class="section-title">Nuestros servicios</div>
+  <p class="section-sub">Soluciones completas para tu hogar, negocio o marca personal.</p>
+  <div class="servicios-grid">
+    <div class="servicio-card">
+      <div class="servicio-icon">📷</div>
+      <h3>Cámaras de Seguridad</h3>
+      <p>Instalación profesional de sistemas de videovigilancia para hogares y negocios. Protegé lo que más importa con tecnología moderna.</p>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">💻</div>
+      <h3>Desarrollo Web para Negocios</h3>
+      <p>Diseñamos y desarrollamos tu página web profesional. Aumentá tu presencia online y conseguí más clientes.</p>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">🙋</div>
+      <h3>Marca Personal</h3>
+      <p>Tu identidad digital, construida desde cero. Portfolio, landing page o sitio completo adaptado a tu imagen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="porque" id="porque">
+  <div class="section-tag">¿Por qué elegirnos?</div>
+  <div class="section-title">Lo que nos diferencia</div>
+  <p class="section-sub">Trabajamos con compromiso, rapidez y atención personalizada.</p>
+  <div class="porque-grid">
+    <div class="porque-item">
+      <div class="porque-num">01</div>
+      <h3>Atención personalizada</h3>
+      <p>Te asesoramos sin vueltas. Escuchamos lo que necesitás y te ofrecemos la mejor opción.</p>
+    </div>
+    <div class="porque-item">
+      <div class="porque-num">02</div>
+      <h3>Productos de calidad</h3>
+      <p>Solo trabajamos con productos que realmente funcionan y duran. Sin letra chica.</p>
+    </div>
+    <div class="porque-item">
+      <div class="porque-num">03</div>
+      <h3>Instalación profesional</h3>
+      <p>Nuestros técnicos instalan tus cámaras de forma segura, prolija y rápida.</p>
+    </div>
+    <div class="porque-item">
+      <div class="porque-num">04</div>
+      <h3>Presencia digital real</h3>
+      <p>Creamos páginas web que generan resultados, no solo diseño bonito.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="contacto-wrapper">
+    <div class="contacto-info">
+      <div class="section-tag">Hablemos</div>
+      <div class="section-title">¿Tenés alguna consulta?</div>
+      <p style="color:var(--muted); font-size:0.95rem;">Escribinos por WhatsApp o Instagram, estamos para ayudarte.</p>
+      <div class="contacto-cards">
+        <a href="https://wa.me/543534081686" target="_blank" class="contacto-card">
+          <div class="contacto-card-icon wa">💬</div>
+          <div>
+            <div class="contacto-card-label">WhatsApp</div>
+            <div class="contacto-card-val">+54 353 408-1686</div>
+          </div>
+        </a>
+        <a href="https://instagram.com/digitalar.oficial" target="_blank" class="contacto-card">
+          <div class="contacto-card-icon ig">📸</div>
+          <div>
+            <div class="contacto-card-label">Instagram</div>
+            <div class="contacto-card-val">@digitalar.oficial</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="contacto-form-side">
+      <h3>Envianos un mensaje</h3>
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" placeholder="Ej: Juan Pérez"/>
+      </div>
+      <div class="form-group">
+        <label>¿Qué te interesa?</label>
+        <select>
+          <option value="">Seleccioná una opción</option>
+          <option>Auriculares</option>
+          <option>Smartwatch</option>
+          <option>Parlantes</option>
+          <option>Fundas</option>
+          <option>Vapers</option>
+          <option>Cámaras de seguridad</option>
+          <option>Desarrollo web</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mensaje</label>
+        <textarea placeholder="Contanos en qué podemos ayudarte..."></textarea>
+      </div>
+      <button class="form-submit" onclick="enviarWA()">Enviar por WhatsApp ↗</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo-DIGITALL.jpeg" alt="DigitalAR" class="logo-img"/>
+  <span>© 2026 DigitalAR. Todos los derechos reservados.</span>
+  <ul class="footer-links">
+    <li><a href="https://wa.me/543534081686" target="_blank">WhatsApp</a></li>
+    <li><a href="https://instagram.com/digitalar.oficial" target="_blank">Instagram</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.producto-card, .servicio-card, .porque-item').forEach(el => observer.observe(el));
+
+  // Enviar por WhatsApp
+  function enviarWA() {
+    const nombre = document.querySelector('input[type="text"]').value || 'sin nombre';
+    const interes = document.querySelector('select').value || 'sin especificar';
+    const mensaje = document.querySelector('textarea').value || '';
+    const texto = `Hola DigitalAR! Soy ${nombre}. Me interesa: ${interes}. ${mensaje}`;
+    window.open(`https://wa.me/543534081686?text=${encodeURIComponent(texto)}`, '_blank');
+  }
+</script>
+
+</body>
+</html>
